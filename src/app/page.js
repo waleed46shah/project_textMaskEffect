@@ -1,95 +1,53 @@
-import Image from 'next/image'
+"use client"
+import { useEffect, useRef } from 'react'
 import styles from './page.module.css'
+import { motion, useInView } from 'framer-motion'
+const phrases = [
+  "It is a long established fact",
+  "that a reader will be distracted",
+  "by the readable content of a page",
+  "when looking at its layout."
+]
 
 export default function Home() {
+
+  
   return (
     <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+      <MaskText phrases={phrases}></MaskText>
+      <MaskText></MaskText>
+      <MaskText></MaskText>
+      <MaskText></MaskText>
     </main>
   )
+}
+
+function MaskText() {
+  const body = useRef(null);
+  const isInView = useInView(body,{ once: true, margin: "-10%" });
+  const animate = {
+    initial: {y:'100%'},
+    open: (i) => ({y:'0%', transition: {duration:0.5, delay:0.1*i} , ease:[0.33, 1, 0.68, 1]})
+  }
+  useEffect(
+    ()=>{
+      console.log(isInView);
+    },[isInView]
+  )
+
+
+
+  return (
+    <div ref={body} className={styles.body}>
+      {
+        phrases.map((phrase, index) => {
+          return <div key={index} className={styles.lineMask}>
+            <motion.p variants={animate} custom={index} initial="initial" animate={isInView? "open":""}>{phrase}</motion.p>
+          </div>
+        })
+      }
+    </div>
+  )
+
 }
